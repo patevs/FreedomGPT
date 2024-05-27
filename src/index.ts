@@ -85,8 +85,8 @@ const createWindow = async () => {
   });
 
   if (await checkConnection()) {
-    mainWindow.loadURL('https://electron.freedomgpt.com/');
-    // mainWindow.loadURL('http://localhost:3001');
+    // mainWindow.loadURL('https://electron.freedomgpt.com/');
+    mainWindow.loadURL('http://localhost:3001');
   } else {
     const offlineApp = next({
       dev: isDev,
