@@ -582,6 +582,7 @@ io.on('connection', (socket) => {
       xmrigProcess.on('exit', (code, signal) => {
         log.info(`Mining process exited with code ${code} and signal ${signal}`);
         socket.emit('xmr_log', `Mining process exited with code ${code} and signal ${signal}`);
+        socket.emit('mining_stopped');
       });
 
       xmrigProcess.on('spawn', () => {
@@ -592,28 +593,14 @@ io.on('connection', (socket) => {
   socket.on('start_mining', (config) => {
     log.info('socket event: start_mining');
     log.info('Starting mining process');
-
-    if (xmrigProcess) {
-      xmrigProcess.kill();
-      xmrigProcess.on('exit', () => {
-        log.info('Previous mining process terminated.');
-        xmrigProcess = null;
-        startMining(config);
-      });
-    } else {
-      startMining(config);
-    }
+    if (xmrigProcess) xmrigProcess.kill();
+    startMining(config);
   });
   socket.on('stop_mining', () => {
     log.info('socket event: stop_mining');
     if (xmrigProcess) {
       log.info('Stopping mining process');
       xmrigProcess.kill();
-      xmrigProcess.on('exit', () => {
-        log.info('Previous mining process terminated.');
-        xmrigProcess = null;
-        socket.emit('mining_stopped');
-      });
     }
   });
 
